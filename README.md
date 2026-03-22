@@ -419,6 +419,65 @@ SPI mode exposes additional GPIO settings for CLK, MOSI, CS, DC, and RST.
 
 ---
 
+## ST7789 TFT Display (Optional)
+
+A 320×170 colour TFT display can be connected to show track metadata with a progress bar on a full-colour screen. Uses [LVGL 8.3](https://lvgl.io/) for rendering and the ESP-IDF built-in `esp_lcd` ST7789 driver.
+
+> Tested with a 1.9" IPS 320×170 ST7789 module on ESP32-S3. Search for "1.9 inch ST7789 SPI TFT 170x320".
+
+### Wiring (ESP32-S3)
+
+| Display Pin | ESP32-S3 GPIO | Function               |
+| ----------- | ------------- | ---------------------- |
+| SCL / CLK   | GPIO 18       | SPI clock              |
+| SDA / MOSI  | GPIO 17       | SPI data               |
+| CS          | GPIO 15       | Chip select            |
+| DC / RS     | GPIO 16       | Data / command select  |
+| RES / RST   | GPIO 21       | Reset                  |
+| BLK / BL    | GPIO 38       | Backlight              |
+| VCC         | 3.3V          | Power                  |
+| GND         | GND           | Ground                 |
+
+### Enabling the Display
+
+#### ESP-IDF
+```bash
+idf.py menuconfig
+# Navigate to: Airplay ESP Configuration → Display Configuration
+# Enable "Enable display"
+# Select driver: ST7789 TFT (320x170 landscape)
+# Set SPI GPIO pins and backlight GPIO as above
+```
+
+#### sdkconfig.defaults (recommended for ESP32-S3)
+
+Add the following to your `sdkconfig.defaults.esp32s3`:
+```
+CONFIG_DISPLAY_ENABLED=y
+CONFIG_DISPLAY_DRIVER_ST7789=y
+CONFIG_DISPLAY_SPI_CLK=18
+CONFIG_DISPLAY_SPI_MOSI=17
+CONFIG_DISPLAY_SPI_CS=15
+CONFIG_DISPLAY_SPI_DC=16
+CONFIG_DISPLAY_SPI_RST=21
+CONFIG_DISPLAY_BL_GPIO=38
+```
+
+### Display Options
+
+| Option            | Default | Description                          |
+| ----------------- | ------- | ------------------------------------ |
+| Display driver    | —       | Select ST7789 TFT (320×170 landscape)|
+| SPI CLK GPIO      | 18      | SPI clock pin                        |
+| SPI MOSI GPIO     | 17      | SPI data pin                         |
+| SPI CS GPIO       | 15      | Chip select pin                      |
+| SPI DC GPIO       | 16      | Data/command select pin              |
+| SPI RST GPIO      | 21      | Reset pin (-1 to disable)            |
+| Backlight GPIO    | 38      | Backlight control pin (-1 to disable)|
+| Refresh interval  | 500 ms  | How often the display redraws        |
+
+---
+
 ## Features
 
 - **AirPlay 2 protocol** — shows up natively in Control Center and all AirPlay apps
